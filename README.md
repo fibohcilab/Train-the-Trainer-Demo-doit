@@ -5,17 +5,17 @@ Demo for train the trainer course (non-degree) 2019 with doit shield
 
 ## Pin
 ### Encoder
-  - CH A  = 2
-  - CH B  = 3
+  - 2 = CH A
+  - 3 = CH B
 ### Servo & Motor
-  - PWMA  = 9
-  - DIRA  = 8
-  - PWMB  = 6
-  - DIRB  = 7
+  - 9 = PWMA
+  - 8 = DIRA
+  - 6 = PWMB
+  - 7 = DIRB
   
 ### i2c
-  - SDA = 4
-  - SCL = 5
+  - 4 = SDA
+  - 5 = SCL
 
 ## Arduino Sheild : doit
   - Address = 0x40
