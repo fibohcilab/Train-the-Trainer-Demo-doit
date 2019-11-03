@@ -1,35 +1,96 @@
+// Visual Micro is in vMicro>General>Tutorial Mode
+// 
 /*
-  Blink
-
-  Turns an LED on for one second, then off for one second, repeatedly.
-
-  Most Arduinos have an on-board LED you can control. On the UNO, MEGA and ZERO
-  it is attached to digital pin 13, on MKR1000 on pin 6. LED_BUILTIN is set to
-  the correct LED pin independent of which board is used.
-  If you want to know what pin the on-board LED is connected to on your Arduino
-  model, check the Technical Specs of your board at:
-  https://www.arduino.cc/en/Main/Products
-
-  modified 8 May 2014
-  by Scott Fitzgerald
-  modified 2 Sep 2016
-  by Arturo Guadalupi
-  modified 8 Sep 2016
-  by Colby Newman
-
-  This example code is in the public domain.
-
-  http://www.arduino.cc/en/Tutorial/Blink
+	Name:       easy i2c servo.ino
+	Created:	01-Nov-2019 14:19:39
+	Author:     CLUSTER-HCI\clust
 */
+#define I2C_DEVICE_ADDR 0x40
+
+#include <Wire.h>
+#include <math.h>
 
 // the setup function runs once when you press reset or power the board
-void setup() {
-	// initialize digital pin LED_BUILTIN as an output.
-	pinMode(LED_BUILTIN, OUTPUT);
-	pinMode(10, INPUT);
+void setup()
+{
+
+	Wire.begin();
+
+	// sleep device
+	Wire.beginTransmission(I2C_DEVICE_ADDR);
+	Wire.write(0x00);
+	Wire.write(0x10); // 0x10
+	Wire.endTransmission();
+
+	// set pre-scaler
+	Wire.beginTransmission(I2C_DEVICE_ADDR);
+	Wire.write(0xfe);
+	Wire.write(121);
+	Wire.endTransmission();
+
+	// reset device
+	Wire.beginTransmission(I2C_DEVICE_ADDR);
+	Wire.write(0x00);
+	Wire.write(0x80);
+	Wire.endTransmission();
+
 }
 
-// the loop function runs over and over again forever
-void loop() {
-	digitalWrite(LED_BUILTIN, digitalRead(10));   // turn the LED on (HIGH is the voltage level)
+// the loop function runs over and over again until power down or reset
+void loop()
+{
+
+	MySetPosition(-1, 0);
+	delay(1000);
+
+	MySetPosition(-1, 180);
+	delay(1000);
+
+}
+
+/*
+	MySetPosition
+		ch			หมายเลข channel (0 ถึง 15) ที่ต้องการควบคุมการทำงาน
+		position	ตำแหน่งเป้าหมายของ Servo มีค่าเท่ากับ 0 ถึง 180 หน่วยเป็น องศา
+*/
+void MySetPosition(int ch, int position)
+{
+
+	const int	TIME_MIN = 150;	// Min Counter for 1.0 ms => 0 degree
+	const int	TIME_MAX = 600;	// Max Counter for 2.0 ms => 180 degree
+
+	// calculate ch
+	if (ch < 0 || ch > 15)
+		ch = 0xfa;
+	else
+		ch = 6 + (ch * 4);
+
+	// calculate position
+	/*
+		(TIME_MAX - TIME_MIN) / 180 = ? / position
+	*/
+
+	double tmp = (double)(TIME_MAX - TIME_MIN) / 180.0;
+	tmp *= (double)position;
+	tmp += TIME_MIN;
+	int result = round(tmp);
+
+	// set position
+	Wire.beginTransmission(I2C_DEVICE_ADDR);
+	Wire.write(ch);
+	Wire.write(0);
+	Wire.endTransmission();
+	Wire.beginTransmission(I2C_DEVICE_ADDR);
+	Wire.write(ch + 1);
+	Wire.write(0);
+	Wire.endTransmission();
+	Wire.beginTransmission(I2C_DEVICE_ADDR);
+	Wire.write(ch + 2);
+	Wire.write(result & 0xff);
+	Wire.endTransmission();
+	Wire.beginTransmission(I2C_DEVICE_ADDR);
+	Wire.write(ch + 3);
+	Wire.write((result & 0xf00) >> 8);
+	Wire.endTransmission();
+
 }
