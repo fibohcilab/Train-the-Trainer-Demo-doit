@@ -43,7 +43,13 @@ void loop()
 	MySetPosition(-1, 0);
 	delay(1000);
 
+	MySetPosition(-1, 90);
+	delay(1000);
+
 	MySetPosition(-1, 180);
+	delay(1000);
+
+	MySetPosition(-1, 90);
 	delay(1000);
 
 }
