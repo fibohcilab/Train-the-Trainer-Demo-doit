@@ -5,13 +5,7 @@
 	Created:	01-Nov-2019 14:19:39
 	Author:     CLUSTER-HCI\clust
 */
-
-#define PIN_PWMA  9
-#define PIN_DIRA  8
-#define PIN_PWMB  6
-#define PIN_DIRB  7
 #define I2C_DEVICE_ADDR 0x40
-#define TIME_ACTION_INTERVAL  10
 
 #include <Wire.h>
 #include <math.h>
@@ -20,14 +14,7 @@
 void setup()
 {
 
-#pragma region init
-
 	Wire.begin();
-	Serial.begin(115200);
-
-#pragma endregion
-
-	Serial.println("[Initialize Servo]");
 
 	// sleep device
 	Wire.beginTransmission(I2C_DEVICE_ADDR);
@@ -40,13 +27,6 @@ void setup()
 	Wire.write(0xfe);
 	Wire.write(121);
 	Wire.endTransmission();
-	/*
-	# counter max = 4095
-	# T = 20 ms, 4095
-	# t = 1 ms, 204.7 ~ 205
-	# t = 1.5 ms, 307.125 ~ 307
-	# t = 2 ms, 409.5 ~ 410
-	*/
 
 	// reset device
 	Wire.beginTransmission(I2C_DEVICE_ADDR);
@@ -54,19 +34,15 @@ void setup()
 	Wire.write(0x80);
 	Wire.endTransmission();
 
-	Serial.println("[START]");
-
 }
 
 // the loop function runs over and over again until power down or reset
 void loop()
 {
 
-	Serial.println("0");
 	MySetPosition(-1, 0);
 	delay(1000);
 
-	Serial.println("180");
 	MySetPosition(-1, 180);
 	delay(1000);
 
@@ -94,19 +70,11 @@ bool MySetPosition(int ch, int position)
 		(TIME_MAX - TIME_MIN) / 180 = ? / position
 	*/
 
-	/*Serial.print("ch=");
-	Serial.println(ch);
-	Serial.print("position=");
-	Serial.println(position);*/
-
 	double tmp = (double)(TIME_MAX - TIME_MIN) / 180.0;
 	tmp *= (double)position;
 	tmp += TIME_MIN;
 	int result = round(tmp);
-/*
-	Serial.print("tmp=");
-	Serial.println(tmp);
-*/
+
 	// set position
 	Wire.beginTransmission(I2C_DEVICE_ADDR);
 	Wire.write(ch);
