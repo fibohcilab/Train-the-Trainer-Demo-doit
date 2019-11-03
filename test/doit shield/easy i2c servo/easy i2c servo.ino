@@ -50,10 +50,10 @@ void loop()
 
 /*
 	MySetPosition
-		ch			�����Ţ channel (0 �֧ 15) ����ͧ��äǺ�����÷ӧҹ
-		position	���˹�������¢ͧ Servo �դ����ҡѺ 0 �֧ 180 ˹����� ͧ��
+		ch			ËÁÒÂàÅ¢ channel (0 ¶Ö§ 15) ·ÕèµéÍ§¡ÒÃ¤Çº¤ØÁ¡ÒÃ·Ó§Ò¹
+		position	µÓáË¹è§à»éÒËÁÒÂ¢Í§ Servo ÁÕ¤èÒà·èÒ¡Ñº 0 ¶Ö§ 180 Ë¹èÇÂà»ç¹ Í§ÈÒ
 */
-bool MySetPosition(int ch, int position)
+void MySetPosition(int ch, int position)
 {
 
 	const int	TIME_MIN = 150;	// Min Counter for 1.0 ms => 0 degree
