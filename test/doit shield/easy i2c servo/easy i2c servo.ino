@@ -63,7 +63,7 @@ void MySetPosition(int ch, int position)
 {
 
 	const int	TIME_MIN = 150;	// Min Counter for 1.0 ms => 0 degree
-	const int	TIME_MAX = 600;	// Max Counter for 2.0 ms => 180 degree
+	const int	TIME_MAX = 500;	// Max Counter for 2.0 ms => 180 degree
 
 	// calculate ch
 	if (ch < 0 || ch > 15)
